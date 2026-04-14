@@ -1,14 +1,60 @@
 # Библиотечная система на PostgreSQL
 
-Учебный проект для отработки JOIN, транзакций и оптимизации запросов.
+Учебный проект для отработки JOIN, транзакций, оконных функций, индексов и оптимизации запросов.
 
-# Стек
+## Стек
+
 - PostgreSQL 18
 - psql / pgAdmin
+- Git
 
-# Ключевые запросы
-1) Книги с авторами	INNER JOIN
-2) Авторы без книг	LEFT JOIN
-3) Количество книг по авторам	GROUP BY + COUNT
-4) Транзакции (UPDATE\BEGIN\COMMIT\RALLBACK)
-5) Чтение планов EXPLAIN ANALYZE
+## Содержание проекта
+
+### Схема данных
+
+- Таблицы `authors` и `books`
+- Связь один-ко-многим через внешний ключ `author_id`
+- Ограничения: `NOT NULL`, `DEFAULT`, `CHECK` (год публикации > 1449)
+- Типы данных: `SERIAL`, `TEXT`, `INTEGER`, `BOOLEAN`, `TIMESTAMPTZ`
+
+### Запросы
+
+- `INNER JOIN` — вывод книг с именами авторов
+- `LEFT JOIN` — вывод всех авторов, включая тех, у кого нет книг
+- `GROUP BY` + `COUNT` — количество книг по каждому автору
+- `UPDATE` с `RETURNING` — изменение статуса выдачи книги
+
+### Транзакции
+
+- `BEGIN`, `COMMIT`, `ROLLBACK`
+- Демонстрация отката изменений при ошибке в `WHERE`
+- Понимание поведения транзакции при разрыве соединения
+
+### Индексы и производительность
+
+- Создание индекса: `CREATE INDEX idx_title ON books (title)`
+- Сравнение `Seq Scan` и `Index Scan` через `EXPLAIN ANALYZE`
+- Разница между `Index Scan`, `Bitmap Heap Scan` и `Index Only Scan`
+- Покрывающий индекс с `INCLUDE`
+
+### Оконные функции
+
+- `ROW_NUMBER()` — нумерация книг внутри каждого автора
+- `RANK()` — нумерация с пропуском номеров при дубликатах
+- `AVG(...) OVER(PARTITION BY ...)` — средний год публикации по автору для каждой книги
+
+### CTE (Common Table Expressions)
+
+- Временные таблицы в рамках одного запроса
+- Рекурсивные CTE для иерархий (примеры использования)
+
+## Пример запроса
+
+```sql
+SELECT
+    a.name,
+    b.title,
+    b.published_year,
+    AVG(b.published_year) OVER (PARTITION BY a.name) AS avg_year_by_author
+FROM books b
+INNER JOIN authors a ON b.author_id = a.id;
