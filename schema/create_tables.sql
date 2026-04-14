@@ -16,3 +16,4 @@ country TEXT, born_year INTEGER);
 #Проверяем созданные таблицы
 \dt
 \d books
+\d authors
