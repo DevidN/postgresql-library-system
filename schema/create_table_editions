@@ -1,4 +1,4 @@
-# Создаем таблицу editions
+# Создаем таблицу издания
 
 CREATE TABLE editions (
     id SERIAL PRIMARY KEY,
