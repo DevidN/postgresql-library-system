@@ -50,4 +50,15 @@ ALTER TABLE book_authors ADD CONSTRAINT fk_book_authors_book FOREIGN KEY (book_i
 ALTER TABLE book_authors ADD PRIMARY KEY (book_id, author_id);
 
 #Делаем аналогичную миграцию данных для таблицы 
+ALTER TABLE editions ADD COLUMN new_book_id INTEGER;
 
+UPDATE editions as e
+SET new_book_id = b.id
+FROM books_old AS bo
+JOIN books AS b ON bo.title = b.title
+WHERE e.book_id = bo.id;
+
+ALTER TABLE editions DROP COLUMN book_id;
+ALTER TABLE editions RENAME COLUMN new_book_id TO book_id;
+ALTER TABLE editions ALTER COLUMN book_id SET NOT NULL;
+ALTER TABLE editions ADD CONSTRAINT fk_editions_book FOREIGN KEY (book_id) REFERENCES books(id);
