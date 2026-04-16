@@ -1,0 +1,8 @@
+# Создаем таблицу editions
+
+CREATE TABLE editions (
+    id SERIAL PRIMARY KEY,
+    book_id INTEGER REFERENCES books(id) NOT NULL,
+    published_year INTEGER CHECK (published_year > 1499),
+    is_borrowed BOOLEAN DEFAULT FALSE
+);
