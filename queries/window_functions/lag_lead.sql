@@ -10,3 +10,20 @@ JOIN book_authors ba ON b.id = ba.book_id
 JOIN authors a ON ba.author_id = a.id
 WHERE a.name = 'Лев Толстой'
 ORDER BY b.title, e.published_year;
+
+#Вывести для каждой книги разницу между годом текущего издания и годом предыдущего издания этой же книги.
+WITH other_publications AS (
+SELECT book_id
+FROM editions
+GROUP BY book_id
+HAVING COUNT(*) > 1
+)
+SELECT 
+b.title,
+e.published_year AS year,
+LAG(e.published_year) OVER (PARTITION BY b.id ORDER BY e.published_year) AS prev_year,
+e.published_year - LAG(e.published_year) OVER (PARTITION BY b.id ORDER BY e.published_year) AS diff
+FROM books b
+JOIN editions e ON b.id = e.book_id
+JOIN other_publications op ON b.id = op.book_id
+ORDER BY b.title, e.published_year;
