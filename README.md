@@ -24,7 +24,9 @@
 - `GROUP BY` + `COUNT` — количество книг по каждому автору
 - `UPDATE` с `RETURNING` — изменение статуса выдачи книги
 
-### Транзакции [тесты с транзакциями](docs/queriestransaction_isolation_experiments.sql)
+### Транзакции 
+[задачи с транзакциями](queries/update_transaction.sql)
+[тесты с транзакциями с 2мя консолями](docs/queriestransaction_isolation_experiments.sql)
 - `BEGIN`, `COMMIT`, `ROLLBACK`
 - Демонстрация отката изменений при ошибке в `WHERE`
 - Понимание поведения транзакции при разрыве соединения
